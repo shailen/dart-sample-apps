@@ -7,7 +7,7 @@ var subscription;
 int waitTime = 10;
 var ctx;
 
-void _moveFn(MouseEvent e) {
+void mouseMoveCallback(MouseEvent e) {
   e.preventDefault();
   e.stopPropagation();
   nextX = e.client.x;
@@ -15,7 +15,7 @@ void _moveFn(MouseEvent e) {
   drawLine();
 }
 
-void _upFn(MouseEvent e) {
+void mouseUpCallback(MouseEvent e) {
   e.preventDefault();
   e.stopPropagation();
   subscription.cancel();
@@ -35,11 +35,8 @@ drawLine() {
   lastY = nextY;
 }
 
-void _drawLine(lastX, lastY, nextX, nextY) {
-
-}
-
 void main() {
+
   var canvas = query('#canvas');
   ctx = canvas.getContext('2d');
   canvas.width = canvas.clientWidth;
@@ -55,8 +52,8 @@ void main() {
     lastX = nextX = e.client.x;
     lastY = nextY = e.client.y;
 
-    subscription = canvas.onMouseMove.listen(_moveFn);
-    canvas.onMouseUp.listen(_upFn);
+    subscription = canvas.onMouseMove.listen(mouseMoveCallback);
+    canvas.onMouseUp.listen(mouseUpCallback);
     draw = true;
     drawLine();
   });

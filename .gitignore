@@ -1,0 +1,4 @@
+packages
+.settings
+.DS_Store
+pubspec.lock

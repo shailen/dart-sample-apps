@@ -1,5 +1,17 @@
 import 'dart:html';
 import 'dart:async';
+import 'package:web_ui/web_ui.dart';
+import 'dart:collection';
+
+@observable
+String selectedThickness = 'Medium';
+LinkedHashMap<String, int> thicknessMap = {'Super-thin' : 2, 'Thin' : 6, 'Medium': 12, 'Thick' : 18, 'Super-thick': 24};
+
+@observable
+String selectedColor = 'yellow';
+LinkedHashMap<String, int> colorsMap = {'red'    : 'rgb(180,30, 20)',
+                                        'green'  : 'rgb(30,180,20)',
+                                        'yellow' : 'rgb(250,250,125)'};
 
 class Doodle {
   CanvasElement canvas;
@@ -7,17 +19,15 @@ class Doodle {
   int lastX, lastY, nextX, nextY;
   bool draw = false;
   var subscription;
-  int waitTime = 10;
-
 
   Doodle(this.canvas) {
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
 
     ctx = canvas.getContext('2d');
-    ctx.lineWidth = 5;
+    ctx.lineWidth = thicknessMap[selectedThickness];
     ctx.lineCap = 'round';
-    ctx.strokeStyle = 'rgb(250,250,125)';
+    ctx.strokeStyle = colorsMap[selectedColor];
   }
 
   void begin() {
@@ -31,7 +41,6 @@ class Doodle {
       subscription = canvas.onMouseMove.listen(mouseMoveCallback);
       canvas.onMouseUp.listen(mouseUpCallback);
       draw = true;
-      drawLine();
     });
   }
 
@@ -51,20 +60,33 @@ class Doodle {
   }
 
   drawLine() {
-    if ( !draw ) return;
+    ctx.lineWidth = thicknessMap[selectedThickness];
+    ctx.strokeStyle = colorsMap[selectedColor];
 
+    if (!draw) return;
+    _drawLine(lastX, lastY, nextX, nextY);
+
+    lastX = nextX;
+    lastY = nextY;
+
+    // new Timer(const Duration(milliseconds: 10), drawLine);
+  }
+
+  _drawLine(lastX, lastY, nextX, nextY) {
     ctx.beginPath();
     ctx.moveTo(lastX, lastY);
     ctx.lineTo(nextX, nextY);
     ctx.stroke();
     ctx.closePath();
-
-    lastX = nextX;
-    lastY = nextY;
   }
 }
+
 
 void main() {
   var doodle = new Doodle(query('canvas'));
   doodle.begin();
+
+  queryAll('option').forEach((option) {
+    option.onSelect.listen((event) => window.console.log(event.target.value));
+  });
 }

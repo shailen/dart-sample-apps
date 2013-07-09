@@ -3,3 +3,4 @@ description: A sample application
 dependencies:
   browser: any
   meta: any
+  web_ui: any

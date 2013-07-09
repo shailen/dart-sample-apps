@@ -7,19 +7,24 @@
 
 <body>
   <div id='canvas-container'>
-    <canvas id="canvas"></canvas>
+    <canvas id="canvas" width=1000 height=600></canvas>
   </div>
 
-  <div id='controls'>
-    Brush Thickness:
-     <select name="thickness" bind-value="selectedThickness">
-      <option template repeat="thickness in thicknessMap.keys"}}>{{thickness}}</option>
-    </select>
+  <div id='controls-container'>
 
-    Colors:
-     <select name="color" bind-value="selectedColor">
-      <option template repeat="color in colorsMap.keys"}}>{{color}}</option>
-    </select>
+    <div class='select-container'>
+      <label for="brushThickness" class='select-label'>Brush thickness: </label>
+      <select name="thickness" bind-value="selectedThickness" id='brushThickness'>
+        <option template repeat="thickness in thicknessMap.keys">{{thickness}}</option>
+      </select>
+    </div>
+
+    <div class='select-container'>
+      <label for="colors" class="select-label">Colors: </label>
+      <select name="color" bind-value="selectedColor" id='colors'>
+        <option template repeat="color in colorsMap.keys" style="background-color:{{color}};">{{color}}</option>
+      </select>
+    </div>
   </div>
   <script type='application/dart' src='doodle.dart'></script>
   <script src="packages/browser/dart.js"></script>

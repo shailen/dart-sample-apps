@@ -5,7 +5,11 @@ import 'dart:collection';
 
 @observable
 String selectedThickness = 'Medium';
-LinkedHashMap<String, int> thicknessMap = {'Super-thin' : 2, 'Thin' : 6, 'Medium': 12, 'Thick' : 18, 'Super-thick': 24};
+LinkedHashMap<String, int> thicknessMap = {'Super-thin' : 3,
+                                           'Thin' : 6,
+                                           'Medium': 12,
+                                           'Thick' : 24,
+                                           'Super-thick': 48};
 
 @observable
 String selectedColor = 'yellow';
@@ -25,6 +29,7 @@ class Doodle {
     canvas.height = canvas.clientHeight;
 
     ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#333';
     ctx.lineWidth = thicknessMap[selectedThickness];
     ctx.lineCap = 'round';
     ctx.strokeStyle = colorsMap[selectedColor];
@@ -84,6 +89,7 @@ class Doodle {
 
 void main() {
   var doodle = new Doodle(query('canvas'));
+  window.console.log(doodle.ctx);
   doodle.begin();
 
   queryAll('option').forEach((option) {

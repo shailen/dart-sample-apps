@@ -24,7 +24,6 @@ class Doodle {
   bool draw = false;
   var subscription;
   DataModel dataModel;
-  List temp = [];
 
   Doodle(this.canvas) {
     canvas.width = canvas.clientWidth;
@@ -35,6 +34,13 @@ class Doodle {
     ctx.lineCap = 'round';
     ctx.strokeStyle = colorsMap[selectedColor];
     dataModel = new DataModel();
+    clearCanvas();
+    window.animationFrame.then(frame);
+  }
+
+  void frame(num t) {
+    window.animationFrame.then(frame);
+    drawEverything();
   }
 
   void begin() {
@@ -48,8 +54,8 @@ class Doodle {
       subscription = canvas.onMouseMove.listen(mouseMoveCallback);
       canvas.onMouseUp.listen(mouseUpCallback);
       draw = true;
-      dataModel.paths.add(new PathData(lastX, lastY, nextX, nextY, ctx.strokeStyle, ctx.lineWidth, true));
-      drawLine();
+      dataModel.paths.add(new PathData(lastX, lastY, nextX, nextY,
+          ctx.strokeStyle, ctx.lineWidth, true));
     });
   }
 
@@ -58,8 +64,11 @@ class Doodle {
     e.stopPropagation();
     nextX = e.client.x;
     nextY = e.client.y;
-    dataModel.paths.add(new PathData(lastX, lastY, nextX, nextY, ctx.strokeStyle, ctx.lineWidth));
-    drawLine();
+    ctx.lineWidth = thicknessMap[selectedThickness];
+    ctx.strokeStyle = colorsMap[selectedColor];
+
+    dataModel.paths.add(new PathData(lastX, lastY, nextX, nextY,
+        ctx.strokeStyle, ctx.lineWidth));
   }
 
   void mouseUpCallback(MouseEvent e) {
@@ -70,14 +79,11 @@ class Doodle {
   }
 
   clearCanvas() {
-    canvas.width = canvas.width;
-    print(identical(canvas, ctx.canvas));
+    ctx.fillStyle = '#333';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
 
   drawLine() {
-    ctx.lineWidth = thicknessMap[selectedThickness];
-    ctx.strokeStyle = colorsMap[selectedColor];
-
     if (!draw) return;
     _drawLine(lastX, lastY, nextX, nextY);
 
@@ -86,9 +92,11 @@ class Doodle {
   }
 
   drawEverything() {
-    if (!draw) return;
-
+    draw = true;
     clearCanvas();
+    ctx.lineWidth = thicknessMap[selectedThickness];
+    ctx.strokeStyle = colorsMap[selectedColor];
+
     for (var i = 0; i < dataModel.paths.length; i++) {
       ctx.lineWidth = dataModel.paths[i].lineWidth;
       ctx.strokeStyle = dataModel.paths[i].strokeStyle;
@@ -100,7 +108,7 @@ class Doodle {
       lastY = nextY;
 
     }
-    print(dataModel.paths);
+    draw = false;
   }
 
   _drawLine(lastX, lastY, nextX, nextY) {
@@ -131,4 +139,14 @@ class PathData {
 void main() {
   var doodle = new Doodle(query('canvas'));
   doodle.begin();
+  query('#undo-last-doodle').onClick.listen((event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (doodle.dataModel.paths.isEmpty) return;
+    var lastItem = doodle.dataModel.paths.lastWhere((item) => item.onMouseDown == true);
+    var lastIndex = doodle.dataModel.paths.indexOf(lastItem);
+    doodle.dataModel.paths = doodle.dataModel.paths.getRange(0, lastIndex).toList();
+    doodle.drawEverything();
+  });
 }

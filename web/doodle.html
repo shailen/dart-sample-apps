@@ -12,20 +12,26 @@
 
   <div id='controls-container'>
 
-    <div class='select-container'>
+    <div class='control-item'>
       <label for="brushThickness" class='select-label'>Brush thickness: </label>
       <select name="thickness" bind-value="selectedThickness" id='brushThickness'>
         <option template repeat="thickness in thicknessMap.keys">{{thickness}}</option>
       </select>
     </div>
 
-    <div class='select-container'>
+    <div class='control-item'>
       <label for="colors" class="select-label">Colors: </label>
       <select name="color" bind-value="selectedColor" id='colors'>
         <option template repeat="color in colorsMap.keys">{{color}}</option>
       </select>
     </div>
+
+    <div class='control-item'>
+      <button name="undo" id="undo-last-doodle">Undo Last Doodle</button>
+    </div>
   </div>
+
+
   <script type='application/dart' src='doodle.dart'></script>
   <script src="packages/browser/dart.js"></script>
 </body>

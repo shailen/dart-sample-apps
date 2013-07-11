@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html>
+  <body>
+    <element name="x-table" constructor="TableComponent" extends="table">
+      <template>
+        <table>
+          <tr template repeat='i in [0, 1, 2, 3]'>
+            <td template repeat='j in [0, 1, 2, 3]'>
+              {{things[(i * 4) + j]}}
+            </td>
+          </tr>
+        </table>
+
+        <div>
+          <button on-click="begin()">Start new game</button><br />
+        </div>
+        <div class='score'>Score: {{count}}</div>
+      </template>
+      <script type="application/dart" src="xtable.dart"></script>
+      <style>
+        td {
+          width: 4em;
+          height: 4em;
+          padding: .1em;
+          margin: .2em;
+          border: 1px solid #777;
+          text-align: center;
+          border-radius: .2em;
+          background-color: #eee;
+          font: 1em sans-serif;
+        }
+      </style>
+    </element>
+  </body>
+</html>

@@ -1,0 +1,8 @@
+td {
+  width: 4em;
+  height: 4em;
+  padding: .1em;
+  margin: .2em;
+  border: 1px solid #666;
+  text-align: center;
+}

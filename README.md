@@ -6,3 +6,7 @@ Each folder represents a small Dart app.
 
 An app that lets you sketch on a canvas using a variety of colors and brushes.
 Built using HTML5 Canvas and Web UI.
+
+### Sixteen
+
+A version of the classic puzzle using Web UI.

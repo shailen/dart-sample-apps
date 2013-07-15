@@ -1,0 +1,19 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+#container {
+  width: 90%;
+  margin: 2% auto;
+}
+
+#notes {
+  margin: 5% auto;
+}
+
+#notes div {
+  border: 1px solid black;
+  display: inline;
+  padding: .2em .5em;
+}

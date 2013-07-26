@@ -16,19 +16,16 @@ String selectedColor = 'yellow';
 LinkedHashMap<String, int> colorsMap = {'red'    : 'rgb(180,30, 20)',
                                         'green'  : 'rgb(30,180,20)',
                                         'yellow' : 'rgb(250,250,125)'};
-
 class Doodle {
   CanvasElement canvas;
   CanvasRenderingContext2D ctx;
-  int lastX, lastY, nextX, nextY;
+  num lastX, lastY, nextX, nextY;
   bool draw = false;
   var subscription;
   DataModel dataModel;
 
   Doodle(this.canvas) {
-    canvas.width = canvas.clientWidth;
-    canvas.height = canvas.clientHeight;
-
+    setCanvasSize();
     ctx = canvas.getContext('2d');
     ctx.lineWidth = thicknessMap[selectedThickness];
     ctx.lineCap = 'round';
@@ -43,13 +40,24 @@ class Doodle {
     drawEverything();
   }
 
+  num windowToCanvas(x) {
+    var bbox = canvas.getBoundingClientRect();
+    return x - bbox.left * (canvas.width / bbox.width);
+  }
+
+  void setCanvasSize([Event e]) {
+    canvas.width = document.body.offsetWidth;
+    canvas.height = (document.body.offsetHeight * .7).toInt();
+  }
+
   void begin() {
+    window.onResize.listen(setCanvasSize);
     canvas.onMouseDown.listen((MouseEvent e) {
       e.preventDefault();
       e.stopPropagation();
 
-      lastX = nextX = e.client.x;
-      lastY = nextY = e.client.y;
+      lastX = nextX = windowToCanvas(e.client.x);
+      lastY = nextY = windowToCanvas(e.client.y);
 
       subscription = canvas.onMouseMove.listen(mouseMoveCallback);
       canvas.onMouseUp.listen(mouseUpCallback);
@@ -62,8 +70,8 @@ class Doodle {
   void mouseMoveCallback(MouseEvent e) {
     e.preventDefault();
     e.stopPropagation();
-    nextX = e.client.x;
-    nextY = e.client.y;
+    nextX = windowToCanvas(e.client.x);
+    nextY = windowToCanvas(e.client.y);
     ctx.lineWidth = thicknessMap[selectedThickness];
     ctx.strokeStyle = colorsMap[selectedColor];
 
@@ -106,7 +114,6 @@ class Doodle {
                 dataModel.paths[i].nextY);
       lastX = nextX;
       lastY = nextY;
-
     }
     draw = false;
   }
